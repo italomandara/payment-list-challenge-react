@@ -4,9 +4,17 @@ import { PaymentsTable } from "./PaymentsTable";
 import { I18N } from "../constants/i18n";
 import { useMemo } from "react";
 import { PaymentFilters } from "./PaymentFilters";
+import { Pagination } from "./Pagination";
 
 export const PaymentsPage = () => {
-  const { data, isLoadingError, error, ...filtersProps } = useSearchPayments();
+  const {
+    data,
+    currentPage,
+    setCurrentPage,
+    isLoadingError,
+    error,
+    ...filtersProps
+  } = useSearchPayments();
 
   const errorMsg = useMemo(() => {
     switch (error?.status) {
@@ -33,6 +41,12 @@ export const PaymentsPage = () => {
       ) : (
         <TableWrapper>
           <PaymentsTable data={data?.payments ?? null} />
+          <Pagination
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+            total={data?.total}
+            pageSize={data?.pageSize}
+          />
         </TableWrapper>
       )}
     </Container>

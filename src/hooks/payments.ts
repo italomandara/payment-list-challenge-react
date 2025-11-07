@@ -1,4 +1,4 @@
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { PaymentSearchResponse, Query } from "../types/payment";
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { objToQueryString } from "../util/payments";
@@ -8,12 +8,17 @@ import { useForm } from "react-hook-form";
 
 export const useSearchPayments = () => {
   const [query, setQuery] = useState<Query>({});
+  const [currentPage, setCurrentPage] = useState(1);
   const { register, getValues, reset, formState } = useForm({
     defaultValues: {
       search: "",
       currency: "",
     },
   });
+
+  useEffect(() => {
+    setQuery({ ...getValues(), page: currentPage });
+  }, [currentPage]);
 
   const onSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -34,6 +39,8 @@ export const useSearchPayments = () => {
 
   return {
     data: data?.data ?? null,
+    currentPage,
+    setCurrentPage,
     isLoadingError,
     error: error as AxiosError,
     register,
