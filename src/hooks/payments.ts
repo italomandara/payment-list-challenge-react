@@ -10,6 +10,10 @@ export const useSearchPayments = () => {
   const onInputChange = (event: ChangeEvent<HTMLInputElement>) =>
     setSearch(event.target.value);
 
+  const onClickClear = () => {
+    setSearch("");
+  };
+
   const onClickSearch = () => {
     setQuery((prev) => ({ ...prev, search }));
   };
@@ -30,5 +34,6 @@ export const useSearchPayments = () => {
     search,
     onInputChange,
     onClickSearch,
+    onClickClear,
   };
 };

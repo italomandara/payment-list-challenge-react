@@ -1,5 +1,6 @@
 import { useSearchPayments } from "../hooks/payments";
 import {
+  ClearButton,
   Container,
   FilterRow,
   SearchButton,
@@ -8,10 +9,10 @@ import {
 } from "./components";
 import { PaymentsTable } from "./PaymentsTable";
 import { I18N } from "../constants/i18n";
-import { ChangeEvent, useState } from "react";
 
 export const PaymentsPage = () => {
-  const { data, onInputChange, onClickSearch, search } = useSearchPayments();
+  const { data, onInputChange, onClickSearch, onClickClear, search } =
+    useSearchPayments();
 
   return (
     <Container>
@@ -24,9 +25,13 @@ export const PaymentsPage = () => {
           value={search}
           placeholder={I18N.SEARCH_PLACEHOLDER}
         />
+
         <SearchButton onClick={onClickSearch}>
           {I18N.SEARCH_BUTTON}
         </SearchButton>
+        {search && (
+          <ClearButton onClick={onClickClear}>{I18N.CLEAR_FILTERS}</ClearButton>
+        )}
       </FilterRow>
       <PaymentsTable data={data?.payments ?? null} />
     </Container>
