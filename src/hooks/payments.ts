@@ -1,6 +1,6 @@
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useState } from "react";
 import { PaymentSearchResponse, Query } from "../types/payment";
-import axios, { AxiosResponse } from "axios";
+import axios, { AxiosError, AxiosResponse } from "axios";
 import { objToQueryString } from "../util/payments";
 import { useQuery } from "@tanstack/react-query";
 
@@ -14,26 +14,32 @@ export const useSearchPayments = () => {
     setSearch("");
   };
 
-  const onClickSearch = () => {
+  const onSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
     setQuery((prev) => ({ ...prev, search }));
   };
+
   const queryString = objToQueryString(query);
+
   const getData = async (): Promise<AxiosResponse<PaymentSearchResponse>> => {
     return axios.get(`/api/payments?${queryString}`);
   };
-  const { data, isFetching, error } = useQuery({
+
+  const { data, isFetching, isLoadingError, error } = useQuery({
     queryKey: ["payments", query],
     queryFn: getData,
   });
+
   return {
     data: data?.data ?? null,
     isFetching,
-    error,
+    isLoadingError,
+    error: error as AxiosError, //Tanstack query is wrongly casting error as Error
     query,
     setQuery,
     search,
     onInputChange,
-    onClickSearch,
+    onSubmit,
     onClickClear,
   };
 };
