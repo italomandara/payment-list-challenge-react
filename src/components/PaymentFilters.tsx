@@ -26,7 +26,7 @@ export const PaymentFilters = ({
     <form onSubmit={onSubmit}>
       <FilterRow>
         <SearchInput
-          aria-label="search"
+          aria-label={I18N.SEARCH_LABEL}
           role="searchbox"
           {...register("search")}
           placeholder={I18N.SEARCH_PLACEHOLDER}

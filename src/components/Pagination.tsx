@@ -37,7 +37,9 @@ export const Pagination = ({
       >
         {I18N.PREVIOUS_BUTTON}
       </PaginationButton>
-      <p>Page {currentPage}</p>
+      <p>
+        {I18N.PAGE_LABEL} {currentPage}
+      </p>
       <PaginationButton
         disabled={currentPage === lastPage}
         onClick={onClickNextPage}
