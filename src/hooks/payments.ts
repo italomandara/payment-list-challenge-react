@@ -1,45 +1,44 @@
-import { ChangeEvent, FormEvent, useState } from "react";
+import { FormEvent, useState } from "react";
 import { PaymentSearchResponse, Query } from "../types/payment";
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { objToQueryString } from "../util/payments";
 import { useQuery } from "@tanstack/react-query";
+import { API_URL } from "../constants";
+import { useForm } from "react-hook-form";
 
 export const useSearchPayments = () => {
   const [query, setQuery] = useState<Query>({});
-  const [search, setSearch] = useState("");
-  const onInputChange = (event: ChangeEvent<HTMLInputElement>) =>
-    setSearch(event.target.value);
-
-  const onClickClear = () => {
-    setSearch("");
-  };
+  const { register, getValues, reset, formState } = useForm({
+    defaultValues: {
+      search: "",
+      currency: "",
+    },
+  });
 
   const onSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setQuery((prev) => ({ ...prev, search }));
+    console.log(getValues());
+    setQuery({ ...getValues() });
   };
 
-  const queryString = objToQueryString(query);
+  const queryString = objToQueryString(query as Record<string, string>);
 
   const getData = async (): Promise<AxiosResponse<PaymentSearchResponse>> => {
-    return axios.get(`/api/payments?${queryString}`);
+    return axios.get(`${API_URL}/?${queryString}`);
   };
 
-  const { data, isFetching, isLoadingError, error } = useQuery({
+  const { data, isLoadingError, error } = useQuery({
     queryKey: ["payments", query],
     queryFn: getData,
   });
 
   return {
     data: data?.data ?? null,
-    isFetching,
     isLoadingError,
-    error: error as AxiosError, //Tanstack query is wrongly casting error as Error
-    query,
-    setQuery,
-    search,
-    onInputChange,
+    error: error as AxiosError,
+    register,
+    formState,
+    reset,
     onSubmit,
-    onClickClear,
   };
 };

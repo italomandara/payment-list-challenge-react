@@ -14,6 +14,6 @@ export function formatAmount(number: number) {
   return number.toFixed(2);
 }
 
-export function objToQueryString(obj: Record<string, any>) {
+export function objToQueryString(obj: Record<string, string>) {
   return new URLSearchParams(obj).toString();
 }

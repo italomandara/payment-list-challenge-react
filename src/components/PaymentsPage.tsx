@@ -1,27 +1,12 @@
 import { useSearchPayments } from "../hooks/payments";
-import {
-  ClearButton,
-  Container,
-  ErrorBox,
-  FilterRow,
-  SearchButton,
-  SearchInput,
-  Title,
-} from "./components";
+import { Container, ErrorBox, TableWrapper, Title } from "./components";
 import { PaymentsTable } from "./PaymentsTable";
 import { I18N } from "../constants/i18n";
 import { useMemo } from "react";
+import { PaymentFilters } from "./PaymentFilters";
 
 export const PaymentsPage = () => {
-  const {
-    data,
-    onInputChange,
-    onSubmit,
-    onClickClear,
-    search,
-    isLoadingError,
-    error,
-  } = useSearchPayments();
+  const { data, isLoadingError, error, ...filtersProps } = useSearchPayments();
 
   const errorMsg = useMemo(() => {
     switch (error?.status) {
@@ -37,28 +22,18 @@ export const PaymentsPage = () => {
   return (
     <Container>
       <Title>{I18N.PAGE_TITLE}</Title>
-      <form onSubmit={onSubmit}>
-        <FilterRow>
-          <SearchInput
-            aria-label="search"
-            role="searchbox"
-            onChange={onInputChange}
-            value={search}
-            placeholder={I18N.SEARCH_PLACEHOLDER}
-          />
-
-          <SearchButton>{I18N.SEARCH_BUTTON}</SearchButton>
-          {search && (
-            <ClearButton onClick={onClickClear}>
-              {I18N.CLEAR_FILTERS}
-            </ClearButton>
-          )}
-        </FilterRow>
-      </form>
+      <PaymentFilters
+        reset={filtersProps.reset}
+        formState={filtersProps.formState}
+        register={filtersProps.register}
+        onSubmit={filtersProps.onSubmit}
+      />
       {isLoadingError ? (
         <ErrorBox>{errorMsg}</ErrorBox>
       ) : (
-        <PaymentsTable data={data?.payments ?? null} />
+        <TableWrapper>
+          <PaymentsTable data={data?.payments ?? null} />
+        </TableWrapper>
       )}
     </Container>
   );
