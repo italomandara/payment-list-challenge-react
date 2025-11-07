@@ -1,5 +1,5 @@
 import { I18N } from "../constants/i18n";
-import { Nullable, Payment, Payments } from "../types/payment";
+import { Nullable, Payment, Payments } from "../types/payments";
 import { formatAmount, formatDate } from "../util/payments";
 import {
   StatusBadge,

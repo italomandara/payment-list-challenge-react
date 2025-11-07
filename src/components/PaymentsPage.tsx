@@ -13,7 +13,8 @@ export const PaymentsPage = () => {
     setCurrentPage,
     isLoadingError,
     error,
-    ...filtersProps
+    onSubmit,
+    ...formProps
   } = useSearchPayments();
 
   const errorMsg = useMemo(() => {
@@ -30,12 +31,7 @@ export const PaymentsPage = () => {
   return (
     <Container>
       <Title>{I18N.PAGE_TITLE}</Title>
-      <PaymentFilters
-        reset={filtersProps.reset}
-        formState={filtersProps.formState}
-        register={filtersProps.register}
-        onSubmit={filtersProps.onSubmit}
-      />
+      <PaymentFilters formProps={formProps} onSubmit={onSubmit} />
       {isLoadingError ? (
         <ErrorBox>{errorMsg}</ErrorBox>
       ) : (

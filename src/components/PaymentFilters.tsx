@@ -1,4 +1,4 @@
-import { FieldValues, UseFormReturn } from "react-hook-form";
+import { UseFormReturn } from "react-hook-form";
 import { I18N } from "../constants/i18n";
 import {
   ClearButton,
@@ -7,19 +7,19 @@ import {
   SearchInput,
 } from "./components";
 import { CurrencySelect } from "./CurrencySelect";
+import { PaymentFiltersForm } from "../types/payments";
 
 interface PaymentFiltersProps {
-  reset: () => void;
-  register: UseFormReturn<FieldValues>["register"];
-  formState: UseFormReturn<FieldValues>["formState"];
+  formProps: Pick<
+    UseFormReturn<PaymentFiltersForm>,
+    "register" | "reset" | "formState"
+  >;
   onSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
 }
 
 export const PaymentFilters = ({
   onSubmit,
-  reset,
-  register,
-  formState,
+  formProps: { reset, register, formState },
 }: PaymentFiltersProps) => {
   const onClickClear = () => reset();
   return (

@@ -1,3 +1,5 @@
+import { FieldValues } from "react-hook-form";
+
 export type Nullable<T extends object> = T | null;
 
 export type PaymentStatus = "completed" | "pending" | "failed";
@@ -30,4 +32,9 @@ export interface Query {
   currency?: string;
   page?: number;
   pageSize?: number;
+}
+
+export interface PaymentFiltersForm extends FieldValues {
+  search: string;
+  currency: string;
 }

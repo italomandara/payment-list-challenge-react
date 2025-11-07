@@ -1,5 +1,9 @@
 import { FormEvent, useEffect, useState } from "react";
-import { PaymentSearchResponse, Query } from "../types/payment";
+import {
+  PaymentFiltersForm,
+  PaymentSearchResponse,
+  Query,
+} from "../types/payments";
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { objToQueryString } from "../util/payments";
 import { useQuery } from "@tanstack/react-query";
@@ -9,12 +13,14 @@ import { useForm } from "react-hook-form";
 export const useSearchPayments = () => {
   const [query, setQuery] = useState<Query>({});
   const [currentPage, setCurrentPage] = useState(1);
-  const { register, getValues, reset, formState } = useForm({
-    defaultValues: {
-      search: "",
-      currency: "",
-    },
-  });
+  const { register, getValues, reset, formState } = useForm<PaymentFiltersForm>(
+    {
+      defaultValues: {
+        search: "",
+        currency: "",
+      },
+    }
+  );
 
   useEffect(() => {
     setQuery({ ...getValues(), page: currentPage });
