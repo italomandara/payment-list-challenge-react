@@ -29,6 +29,7 @@ export const useSearchPayments = () => {
   const onSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     console.log(getValues());
+    setCurrentPage(1);
     setQuery({ ...getValues() });
   };
 
