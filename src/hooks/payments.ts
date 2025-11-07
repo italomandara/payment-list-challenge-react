@@ -1,27 +1,34 @@
-import { useEffect, useState } from "react";
-import {
-  Nullable,
-  Payments,
-  PaymentSearchResponse,
-  Query,
-} from "../types/payment";
+import { ChangeEvent, useState } from "react";
+import { PaymentSearchResponse, Query } from "../types/payment";
 import axios, { AxiosResponse } from "axios";
 import { objToQueryString } from "../util/payments";
+import { useQuery } from "@tanstack/react-query";
 
-export const useSearchPayments = (query: Query) => {
-  const [data, setData] = useState<Nullable<Payments>>(null);
-  const queryString = objToQueryString(query);
-  const getData = async () => {
-    // this could use tanstack query if loading states are needed, but it's not needed at the moment
-    const res: AxiosResponse<PaymentSearchResponse> = await axios.get(
-      `/api/payments?${queryString}`
-    );
-    if (res.data) {
-      setData(res.data.payments);
-    }
+export const useSearchPayments = () => {
+  const [query, setQuery] = useState<Query>({});
+  const [search, setSearch] = useState("");
+  const onInputChange = (event: ChangeEvent<HTMLInputElement>) =>
+    setSearch(event.target.value);
+
+  const onClickSearch = () => {
+    setQuery((prev) => ({ ...prev, search }));
   };
-  useEffect(() => {
-    getData();
-  }, []);
-  return { data };
+  const queryString = objToQueryString(query);
+  const getData = async (): Promise<AxiosResponse<PaymentSearchResponse>> => {
+    return axios.get(`/api/payments?${queryString}`);
+  };
+  const { data, isFetching, error } = useQuery({
+    queryKey: ["payments", query],
+    queryFn: getData,
+  });
+  return {
+    data: data?.data ?? null,
+    isFetching,
+    error,
+    query,
+    setQuery,
+    search,
+    onInputChange,
+    onClickSearch,
+  };
 };
