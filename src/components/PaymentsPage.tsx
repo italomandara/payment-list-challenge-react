@@ -10,7 +10,7 @@ import {
 } from "./components";
 import { PaymentsTable } from "./PaymentsTable";
 import { I18N } from "../constants/i18n";
-import { AxiosError } from "axios";
+import { useMemo } from "react";
 
 export const PaymentsPage = () => {
   const {
@@ -22,6 +22,17 @@ export const PaymentsPage = () => {
     isLoadingError,
     error,
   } = useSearchPayments();
+
+  const errorMsg = useMemo(() => {
+    switch (error?.status) {
+      case 404:
+        return I18N.PAYMENT_NOT_FOUND;
+      case 500:
+        return I18N.INTERNAL_SERVER_ERROR;
+      default:
+        return I18N.SOMETHING_WENT_WRONG;
+    }
+  }, [error?.status]);
 
   return (
     <Container>
@@ -44,8 +55,8 @@ export const PaymentsPage = () => {
           )}
         </FilterRow>
       </form>
-      {isLoadingError && error.status === 404 ? (
-        <ErrorBox>{I18N.PAYMENT_NOT_FOUND}</ErrorBox>
+      {isLoadingError ? (
+        <ErrorBox>{errorMsg}</ErrorBox>
       ) : (
         <PaymentsTable data={data?.payments ?? null} />
       )}
